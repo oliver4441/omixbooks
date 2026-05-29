@@ -1,0 +1,46 @@
+import { createClient } from "@/lib/supabase/server";
+import BookCard from "@/components/BookCard";
+import Link from "next/link";
+import { BookOpen } from "lucide-react";
+
+export default async function Home() {
+  const supabase = await createClient();
+  const { data: books } = await supabase
+    .from("books")
+    .select("*")
+    .eq("is_active", true)
+    .order("created_at", { ascending: false })
+    .limit(8);
+
+  return (
+    <div>
+      <section className="bg-gradient-to-br from-emerald-600 to-emerald-800 text-white">
+        <div className="max-w-6xl mx-auto px-4 py-24 text-center">
+          <BookOpen className="w-16 h-16 mx-auto mb-6 opacity-90" />
+          <h1 className="text-5xl font-bold mb-4">OmixBooks</h1>
+          <p className="text-xl text-emerald-100 max-w-2xl mx-auto mb-8">
+            Your digital bookstore. Discover, buy, and download books instantly.
+          </p>
+          <Link href="/books" className="inline-block bg-white text-emerald-700 font-semibold px-8 py-3 rounded-lg hover:bg-emerald-50 transition-colors">
+            Browse Books
+          </Link>
+        </div>
+      </section>
+
+      <section className="max-w-6xl mx-auto px-4 py-16">
+        <h2 className="text-2xl font-bold mb-8">Latest Books</h2>
+        {books && books.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {books.map((book) => (
+              <BookCard key={book.id} book={book} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-16 text-gray-500">
+            <p className="text-lg">No books yet. Check back soon!</p>
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}
