@@ -2,12 +2,10 @@
 import Link from "next/link";
 import { useCart } from "@/components/CartContext";
 import CartItemComp from "@/components/CartItem";
-import { formatPrice } from "@/lib/utils";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Gift } from "lucide-react";
 
 export default function CartPage() {
   const { items } = useCart();
-  const totalKes = items.reduce((sum, item) => sum + item.book.price_kes, 0);
   if (items.length === 0) return (
     <div className="max-w-2xl mx-auto px-4 py-16 text-center">
       <ShoppingCart className="w-16 h-16 mx-auto text-gray-300 mb-4" />
@@ -18,13 +16,16 @@ export default function CartPage() {
   );
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
-      <h1 className="text-2xl font-bold mb-8">Shopping Cart ({items.length})</h1>
+      <h1 className="text-2xl font-bold mb-8">Your Books ({items.length})</h1>
       <div className="bg-white rounded-lg shadow-sm p-6">
         {items.map((item) => <CartItemComp key={item.book.id} item={item} />)}
-        <div className="pt-4 flex items-center justify-between"><span className="text-lg font-semibold">Total</span><span className="text-xl font-bold">{formatPrice(totalKes, "KES")}</span></div>
+        <div className="pt-4 flex items-center justify-between">
+          <span className="text-lg font-semibold">Total</span>
+          <span className="text-xl font-bold text-emerald-600 flex items-center gap-1.5"><Gift className="w-5 h-5" /> Free</span>
+        </div>
       </div>
       <div className="mt-6 text-center">
-        <Link href="/checkout" className="inline-block bg-emerald-600 text-white font-semibold px-8 py-3 rounded-lg hover:bg-emerald-700 transition-colors">Proceed to Checkout</Link>
+        <Link href="/checkout" className="inline-block bg-emerald-600 text-white font-semibold px-8 py-3 rounded-lg hover:bg-emerald-700 transition-colors">Get Books — Free</Link>
       </div>
     </div>
   );

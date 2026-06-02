@@ -2,9 +2,9 @@ import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import AddToCartButton from "@/components/AddToCartButton";
-import { formatPrice, formatFileSize } from "@/lib/utils";
+import { formatFileSize } from "@/lib/utils";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Gift } from "lucide-react";
 
 interface Props { params: Promise<{ slug: string }>; }
 export default async function BookPage({ params }: Props) {
@@ -23,8 +23,9 @@ export default async function BookPage({ params }: Props) {
           <h1 className="text-3xl font-bold text-gray-900">{book.title}</h1>
           <p className="text-lg text-gray-500 mt-1">by {book.author}</p>
           <div className="flex items-center gap-3 mt-6">
-            {book.price_kes > 0 && <span className="text-2xl font-bold text-gray-900">{formatPrice(book.price_kes, "KES")}</span>}
-            {book.price_usd > 0 && <span className="text-xl text-gray-500">{formatPrice(book.price_usd, "USD")}</span>}
+            <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-sm font-semibold">
+              <Gift className="w-4 h-4" /> Free
+            </span>
           </div>
           <div className="flex items-center gap-4 mt-4 text-sm text-gray-500">
             <span className="uppercase font-medium">{book.file_type}</span><span>·</span><span>{formatFileSize(book.file_size)}</span>

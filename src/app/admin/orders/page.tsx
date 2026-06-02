@@ -52,7 +52,7 @@ export default async function AdminOrdersPage() {
                       {formatPrice(order.amount, order.currency)}
                     </td>
                     <td className="px-6 py-4 capitalize">
-                      {order.payment_method}
+                      {order.payment_method === "free" ? "Free" : order.payment_method}
                     </td>
                     <td className="px-6 py-4">
                       <span

@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import BookCard from "@/components/BookCard";
 import Link from "next/link";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Gift } from "lucide-react";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -18,12 +18,18 @@ export default async function Home() {
         <div className="max-w-6xl mx-auto px-4 py-24 text-center">
           <BookOpen className="w-16 h-16 mx-auto mb-6 opacity-90" />
           <h1 className="text-5xl font-bold mb-4">OmixBooks</h1>
-          <p className="text-xl text-emerald-100 max-w-2xl mx-auto mb-8">
-            Your digital bookstore. Discover, buy, and download books instantly.
+          <p className="text-xl text-emerald-100 max-w-2xl mx-auto mb-4">
+            Your digital bookstore. Discover and download books instantly.
           </p>
-          <Link href="/books" className="inline-block bg-white text-emerald-700 font-semibold px-8 py-3 rounded-lg hover:bg-emerald-50 transition-colors">
-            Browse Books
-          </Link>
+          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-8">
+            <Gift className="w-5 h-5" />
+            <span className="font-medium">All books are currently free!</span>
+          </div>
+          <div>
+            <Link href="/books" className="inline-block bg-white text-emerald-700 font-semibold px-8 py-3 rounded-lg hover:bg-emerald-50 transition-colors">
+              Browse Books
+            </Link>
+          </div>
         </div>
       </section>
 

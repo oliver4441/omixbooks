@@ -22,7 +22,7 @@ export interface Order {
   buyer_name: string;
   amount: number;
   currency: "KES" | "USD";
-  payment_method: "mpesa" | "stripe";
+  payment_method: "free";
   payment_ref: string;
   status: "pending" | "completed" | "failed";
   download_count: number;

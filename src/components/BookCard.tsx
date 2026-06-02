@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Book } from "@/types";
-import { formatPrice } from "@/lib/utils";
+import { Gift } from "lucide-react";
 
 export default function BookCard({ book }: { book: Book }) {
   return (
@@ -17,9 +17,10 @@ export default function BookCard({ book }: { book: Book }) {
         <div className="p-4">
           <h3 className="font-semibold text-gray-900 group-hover:text-emerald-600 transition-colors line-clamp-1">{book.title}</h3>
           <p className="text-sm text-gray-500 mt-1">{book.author}</p>
-          <div className="flex items-center gap-2 mt-3">
-            {book.price_kes > 0 && <span className="text-sm font-medium text-gray-900">{formatPrice(book.price_kes, "KES")}</span>}
-            {book.price_usd > 0 && <span className="text-sm text-gray-500">· {formatPrice(book.price_usd, "USD")}</span>}
+          <div className="flex items-center gap-1.5 mt-3">
+            <span className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600">
+              <Gift className="w-3.5 h-3.5" /> Free
+            </span>
           </div>
         </div>
       </div>
