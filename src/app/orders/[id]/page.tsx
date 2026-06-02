@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { getOrderById } from "@/lib/books";
 import { notFound } from "next/navigation";
 import { CheckCircle, Download, Mail, Gift } from "lucide-react";
 
@@ -6,9 +6,9 @@ interface Props { params: Promise<{ id: string }>; }
 
 export default async function OrderDetailPage({ params }: Props) {
   const { id } = await params;
-  const supabase = await createClient();
-  const { data: order, error } = await supabase.from("orders").select("*, book:books(*)").eq("id", id).single();
-  if (error || !order) notFound();
+  const order = await getOrderById(id);
+  if (!order) notFound();
+
   const isCompleted = order.status === "completed";
 
   return (

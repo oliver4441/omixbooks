@@ -5,13 +5,9 @@ services:
     buildCommand: pnpm install && pnpm run build
     startCommand: pnpm start
     envVars:
-      - key: NEXT_PUBLIC_SUPABASE_URL
-        value: https://dsaajdwjihxnrjzpfhse.supabase.co
-      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
-        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzYWFqZHdqaWh4bnJqenBmaHNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5NzA1OTgsImV4cCI6MjA5MzU0NjU5OH0.9DrPzUdX12it81fPFKCeEdk1ONCHsXQQps2E4eRVNZ0
-      - key: SUPABASE_SERVICE_ROLE_KEY
-        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzYWFqZHdqaWh4bnJqenBmaHNlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3Nzk3MDU5OCwiZXhwIjoyMDkzNTQ2NTk4fQ.Y1NmXTgVgSP7ubqJZnObWmHs8P0i4rkSPe6ahQtteJU
-      - key: NEXT_PUBLIC_APP_URL
-        value: https://omixbooks.onrender.com
+      - key: DATABASE_URL
+        fromDatabase:
+          name: omixbooks-db
+          property: connectionString
       - key: NODE_ENV
         value: production

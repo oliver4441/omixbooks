@@ -1,9 +1,9 @@
-import { createClient } from "@/lib/supabase/server";
+import { getActiveBooks } from "@/lib/books";
 import BookCard from "@/components/BookCard";
 
 export default async function BooksPage() {
-  const supabase = await createClient();
-  const { data: books } = await supabase.from("books").select("*").eq("is_active", true).order("created_at", { ascending: false });
+  const books = await getActiveBooks();
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold mb-2">All Books</h1>

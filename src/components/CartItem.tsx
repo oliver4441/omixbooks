@@ -17,7 +17,7 @@ export default function CartItem({ item }: { item: CartItemType }) {
         <Link href={`/books/${item.book.slug}`} className="font-semibold text-gray-900 hover:text-emerald-600 line-clamp-1">{item.book.title}</Link>
         <p className="text-sm text-gray-500">{item.book.author}</p>
         <div className="flex items-center justify-between mt-2">
-          <div className="flex gap-2">{item.book.price_kes > 0 && <span className="font-medium">{formatPrice(item.book.price_kes, "KES")}</span>}</div>
+          <div className="flex gap-2"><span className="font-medium text-emerald-600">Free</span></div>
           <button onClick={() => removeItem(item.book.id)} className="text-gray-400 hover:text-red-500 transition-colors"><Trash2 className="w-4 h-4" /></button>
         </div>
       </div>

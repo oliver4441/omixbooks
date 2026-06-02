@@ -1,16 +1,10 @@
-import { createClient } from "@/lib/supabase/server";
+import { getActiveBooks } from "@/lib/books";
 import BookCard from "@/components/BookCard";
 import Link from "next/link";
 import { BookOpen, Gift } from "lucide-react";
 
 export default async function Home() {
-  const supabase = await createClient();
-  const { data: books } = await supabase
-    .from("books")
-    .select("*")
-    .eq("is_active", true)
-    .order("created_at", { ascending: false })
-    .limit(8);
+  const books = await getActiveBooks();
 
   return (
     <div>
