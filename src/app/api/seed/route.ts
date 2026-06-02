@@ -49,10 +49,45 @@ const BOOKS_META: Record<string, { title: string; author: string; description: s
   },
 };
 
+async function ensureBuckets() {
+  if (!supabaseAdmin) return;
+
+  const buckets = [
+    { id: "book-files", name: "book-files", public: false, fileSizeLimit: 52428800, allowedMimeTypes: ["application/pdf", "application/epub+zip"] },
+    { id: "book-covers", name: "book-covers", public: true, fileSizeLimit: 5242880, allowedMimeTypes: ["image/jpeg", "image/png", "image/webp"] },
+  ];
+
+  for (const bucket of buckets) {
+    try {
+      // Try to get bucket first
+      const { data: existing } = await supabaseAdmin.storage.getBucket(bucket.id);
+      if (existing) continue;
+    } catch {
+      // Bucket doesn't exist, create it
+    }
+
+    try {
+      await supabaseAdmin.storage.createBucket(bucket.id, {
+        public: bucket.public,
+        fileSizeLimit: bucket.fileSizeLimit,
+        allowedMimeTypes: bucket.allowedMimeTypes,
+      });
+      console.log(`Created bucket: ${bucket.id}`);
+    } catch (err: any) {
+      // Bucket might already exist or RLS issue — try direct SQL
+      if (err.message?.includes("already exists")) continue;
+      console.error(`Failed to create bucket ${bucket.id}:`, err.message);
+    }
+  }
+}
+
 export async function POST() {
   if (!supabaseAdmin) {
     return NextResponse.json({ error: "Supabase admin not configured" }, { status: 500 });
   }
+
+  // Ensure buckets exist first
+  await ensureBuckets();
 
   const results: { title: string; status: string; error?: string }[] = [];
 
@@ -64,7 +99,7 @@ export async function POST() {
       try {
         stats = statSync(filePath);
       } catch {
-        results.push({ title: meta.title, status: "skipped", error: "File not found" });
+        results.push({ title: meta.title, status: "skipped", error: "File not found on server" });
         continue;
       }
 
@@ -76,7 +111,7 @@ export async function POST() {
       const slug = slugify(meta.title);
 
       // Check if already exists
-      const { data: existing } = await supabaseAdmin.from("books").select("id").eq("slug", slug).single();
+      const { data: existing } = await supabaseAdmin.from("books").select("id").eq("slug", slug).maybeSingle();
       if (existing) {
         results.push({ title: meta.title, status: "already_exists" });
         continue;
@@ -125,7 +160,13 @@ export async function POST() {
 }
 
 export async function GET() {
+  // Health check — list existing books
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: "Supabase admin not configured" }, { status: 500 });
+  }
+  const { data: books } = await supabaseAdmin.from("books").select("title, slug, is_active").order("created_at", { ascending: false });
   return NextResponse.json({
-    message: "Send POST to seed books from public/books folder",
+    message: "POST to seed books from public/books folder",
+    existingBooks: books ?? [],
   });
 }
