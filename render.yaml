@@ -12,7 +12,3 @@ services:
       - key: NODE_ENV
         value: production
     plan: free
-
-databases:
-  - name: omixbooks-db
-    plan: free
