@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getOrderById } from "@/lib/books";
 import { notFound } from "next/navigation";
 import { CheckCircle, Download, Mail, Gift } from "lucide-react";

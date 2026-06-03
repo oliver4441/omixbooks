@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getAllBooks } from "@/lib/books";
 import Link from "next/link";
 import { formatPrice } from "@/lib/utils";

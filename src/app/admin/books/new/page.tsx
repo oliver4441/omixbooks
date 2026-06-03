@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { createBook } from "@/lib/books";
 import { slugify } from "@/lib/utils";
 import { ArrowLeft, Upload } from "lucide-react";
 import Link from "next/link";
@@ -25,16 +24,22 @@ export default function NewBookPage() {
       const uploadData = await uploadRes.json();
       if (!uploadRes.ok) throw new Error(uploadData.error || "Upload failed");
 
-      // Create book record
-      await createBook({
-        title: form.title,
-        slug: slugify(form.title),
-        author: form.author,
-        description: form.description,
-        file_url: uploadData.path,
-        file_type: form.file_type,
-        file_size: bookFile.size,
+      // Create book record via API
+      const createRes = await fetch("/api/books", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: form.title,
+          slug: slugify(form.title),
+          author: form.author,
+          description: form.description,
+          file_url: uploadData.path,
+          file_type: form.file_type,
+          file_size: bookFile.size,
+        }),
       });
+      const createData = await createRes.json();
+      if (!createRes.ok) throw new Error(createData.error || "Failed to create book");
 
       toast.success("Book uploaded successfully!");
       router.push("/admin/books");
@@ -48,7 +53,7 @@ export default function NewBookPage() {
   return (
     <div className="max-w-2xl">
       <Link href="/admin/books" className="inline-flex items-center gap-1 text-gray-500 hover:text-gray-700 mb-6">
-        <ArrowLeft className="w-4 h-4" />Back to Books
+        <ArrowLeft className="w-4-4" /> Back to Books
       </Link>
       <h1 className="text-2xl font-bold mb-8">Upload New Book</h1>
       <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-sm text-emerald-700 mb-6">

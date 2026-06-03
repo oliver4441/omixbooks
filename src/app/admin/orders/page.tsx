@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getOrdersWithBooks } from "@/lib/books";
 import { formatPrice } from "@/lib/utils";
 import type { Order } from "@/types";

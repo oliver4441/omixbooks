@@ -7,14 +7,14 @@ export async function getActiveBooks(): Promise<Book[]> {
   const { rows } = await query(
     "SELECT * FROM books WHERE is_active = true ORDER BY created_at DESC"
   );
-  return rows.map(rowToBook);
+  return rows.map((row: any) => rowToBook(row));
 }
 
 export async function getAllBooks(): Promise<Book[]> {
   const { rows } = await query(
     "SELECT * FROM books ORDER BY created_at DESC"
   );
-  return rows.map(rowToBook);
+  return rows.map((row: any) => rowToBook(row));
 }
 
 export async function getBookBySlug(slug: string): Promise<Book | null> {
@@ -91,7 +91,7 @@ export async function getOrdersWithBooks(): Promise<(Order & { book?: Book })[]>
      LEFT JOIN books b ON o.book_id = b.id
      ORDER BY o.created_at DESC`
   );
-  return rows.map((row) => ({
+  return rows.map((row: any) => ({
     ...rowToOrder(row),
     book: row.book_title ? { title: row.book_title, author: row.book_author } as any : undefined,
   }));

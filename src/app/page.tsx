@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getActiveBooks } from "@/lib/books";
 import BookCard from "@/components/BookCard";
 import Link from "next/link";
