@@ -1,10 +1,18 @@
 export const dynamic = "force-dynamic";
 
 import { getActiveBooks } from "@/lib/books";
+import { isDbConfigured } from "@/lib/db";
 import BookCard from "@/components/BookCard";
 
 export default async function BooksPage() {
-  const books = await getActiveBooks();
+  let books: any[] = [];
+  try {
+    if (await isDbConfigured()) {
+      books = await getActiveBooks();
+    }
+  } catch {
+    // DB not ready
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">

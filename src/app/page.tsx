@@ -1,12 +1,23 @@
 export const dynamic = "force-dynamic";
 
 import { getActiveBooks } from "@/lib/books";
+import { isDbConfigured } from "@/lib/db";
 import BookCard from "@/components/BookCard";
 import Link from "next/link";
-import { BookOpen, Gift } from "lucide-react";
+import { BookOpen, Gift, Database } from "lucide-react";
 
 export default async function Home() {
-  const books = await getActiveBooks();
+  let books: any[] = [];
+  let dbOk = false;
+
+  try {
+    dbOk = await isDbConfigured();
+    if (dbOk) {
+      books = await getActiveBooks();
+    }
+  } catch {
+    dbOk = false;
+  }
 
   return (
     <div>
@@ -28,6 +39,23 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {!dbOk && (
+        <section className="max-w-6xl mx-auto px-4 py-8">
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 flex items-start gap-4">
+            <Database className="w-8 h-8 text-amber-600 flex-shrink-0 mt-1" />
+            <div>
+              <h2 className="font-semibold text-amber-800 mb-1">Database not configured</h2>
+              <p className="text-sm text-amber-600 mb-3">
+                The database connection is not set up yet. Books will appear here once the database is connected and initialized.
+              </p>
+              <Link href="/admin" className="text-sm font-medium text-amber-700 hover:underline">
+                Go to Admin Dashboard →
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="max-w-6xl mx-auto px-4 py-16">
         <h2 className="text-2xl font-bold mb-8">Latest Books</h2>

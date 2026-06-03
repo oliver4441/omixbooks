@@ -1,6 +1,15 @@
 export const dynamic = "force-dynamic";
 
-import { query } from "@/lib/db";
+import { query, initDb } from "@/lib/db";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+
+async function initializeDb() {
+  "use server";
+  await initDb();
+  revalidatePath("/admin");
+  redirect("/admin");
+}
 
 export default async function AdminPage() {
   let bookCount = 0;
@@ -38,21 +47,27 @@ export default async function AdminPage() {
         </div>
       </div>
 
-      {bookCount === 0 && (
+      {bookCount === 0 && dbStatus === "connected" && (
         <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-6">
           <h2 className="font-semibold text-emerald-800 mb-2">First time setup</h2>
-          <p className="text-sm text-emerald-600 mb-4">Click below to create database tables and upload the initial books.</p>
-          <button
-            onClick={async () => {
-              const res = await fetch("/api/init", { method: "POST" });
-              const data = await res.json();
-              alert(JSON.stringify(data, null, 2));
-              window.location.reload();
-            }}
-            className="bg-emerald-600 text-white font-medium px-6 py-2 rounded-lg hover:bg-emerald-700"
-          >
-            Initialize Database & Upload Books
-          </button>
+          <p className="text-sm text-emerald-600 mb-4">Click below to create database tables.</p>
+          <form action={initializeDb}>
+            <button
+              type="submit"
+              className="bg-emerald-600 text-white font-medium px-6 py-2 rounded-lg hover:bg-emerald-700"
+            >
+              Initialize Database Tables
+            </button>
+          </form>
+        </div>
+      )}
+
+      {dbStatus !== "connected" && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+          <h2 className="font-semibold text-red-800 mb-2">Database not connected</h2>
+          <p className="text-sm text-red-600">
+            Please configure the DATABASE_URL environment variable in your Render dashboard.
+          </p>
         </div>
       )}
     </div>

@@ -1,20 +1,38 @@
 import { Pool } from "pg";
 
-// Render PostgreSQL connection
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
-});
+let pool: Pool | null = null;
 
-export { pool };
+function getPool(): Pool {
+  if (!pool) {
+    pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
+    });
+  }
+  return pool;
+}
 
-// Helper to run queries
+export { getPool };
+
+// Helper to run queries with error handling
 export async function query(text: string, params?: any[]) {
+  const p = getPool();
   const start = Date.now();
-  const res = await pool.query(text, params);
+  const res = await p.query(text, params);
   const duration = Date.now() - start;
   console.log("Query executed", { text: text.substring(0, 50), duration, rows: res.rowCount });
   return res;
+}
+
+// Check if database is configured
+export async function isDbConfigured(): Promise<boolean> {
+  if (!process.env.DATABASE_URL) return false;
+  try {
+    await query("SELECT 1");
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 // Initialize database tables
